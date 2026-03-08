@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Magical Adventure for Kids</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* Basic mobile-friendly and playful styling */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom, #ffecd2, #fcb69f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+
+    .scene {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      animation: fadein 0.8s;
+    }
+
+    .scene p {
+      font-size: 1.2em;
+      line-height: 1.4em;
+    }
+
+    .options {
+      margin: 20px 0;
+    }
+
+    .option-button {
+      display: block;
+      width: 80%;
+      background-color: #89cff0;
+      border: none;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px auto;
+      font-size: 1.2em;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .option-button:hover {
+      background-color: #558fcf;
+      transform: scale(1.02);
+    }
+
+    .option-button:active {
+      transform: scale(0.98);
+    }
+
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>Magical Adventure</h1>
+    <div id="scene" class="scene"></div>
+    <div id="options" class="options"></div>
+  </div>
+
+  <script>
+    // Define the adventure scenes with descriptions and options.
+    // Each scene has three options (except "ending" scenes which have no options)
+    const scenes = {
+      "start": {
+        text: "Welcome to a magical adventure! You find yourself in an enchanted forest with sparkling trees. Which path will you take?",
+        options: [
+          { text: "Follow the glowing pond", next: "pond" },
+          { text: "Chase a dancing butterfly", next: "butterfly" },
+          { text: "Explore a mysterious cave", next: "cave" }
+        ]
+      },
+      "pond": {
+        text: "You approach the glowing pond. The water shimmers with colors, and you hear little fish singing a friendly tune.",
+        options: [
+          { text: "Dip your hands in the water", next: "water_magic" },
+          { text: "Sit down and listen carefully", next: "pond_story" },
+          { text: "Wade deeper to find hidden treasure", next: "treasure" }
+        ]
+      },
+      "butterfly": {
+        text: "The butterfly flutters around you, leading you to a field of giant, laughing sunflowers that sway merrily.",
+        options: [
+          { text: "Dance with the sunflowers", next: "dance" },
+          { text: "Follow the butterfly to a secret meadow", next: "meadow" },
+          { text: "Pick a sunflower as a gift", next: "gift" }
+        ]
+      },
+      "cave": {
+        text: "You enter the mysterious cave. It glows softly with crystals on the walls and echoes of playful sounds fill the space.",
+        options: [
+          { text: "Venture deeper into the cave", next: "deep_cave" },
+          { text: "Touch the sparkling crystals", next: "crystal_touch" },
+          { text: "Call out a friendly hello", next: "cave_friend" }
+        ]
+      },
+      // Ending scenes:
+      "water_magic": {
+        text: "As your hands touch the water, magical bubbles appear carrying little wishes. You feel happy and light. The adventure ends here."
+      },
+      "pond_story": {
+        text: "Listening to the pond's song fills you with dreams of far-off lands. You've discovered the magic of calm moments. The adventure ends here."
+      },
+      "treasure": {
+        text: "Wading deeper, you uncover a treasure of sparkling gems underwater! They shine brightly and fill you with wonder. The adventure ends here."
+      },
+      "dance": {
+        text: "You dance joyfully with the laughing sunflowers. The magic of the moment fills your heart. The adventure ends here."
+      },
+      "meadow": {
+        text: "Following the butterfly, you discover a secret meadow filled with fluttering fairies. You make new magical friends. The adventure ends here."
+      },
+      "gift": {
+        text: "You pick a beautiful sunflower and the garden smiles at you. It's a treasure of nature warming your heart. The adventure ends here."
+      },
+      "deep_cave": {
+        text: "Venturing deeper, you find a hidden chamber with twinkling lights resembling a starry sky. The mystery is wonderful. The adventure ends here."
+      },
+      "crystal_touch": {
+        text: "As you touch the sparkling crystals, they glow warmly and whisper ancient secrets. A magical blessing fills you. The adventure ends here."
+      },
+      "cave_friend": {
+        text: "Your cheerful greeting echoes in the cave, and a friendly voice answers back. It feels like the cave itself is happy to see you. The adventure ends here."
+      }
+    };
+
+    // Optional: a function stub for sound effects if you want to add interactivity
+    /*
+    function playClickSound() {
+      const audio = new Audio('https://example.com/click-sound.mp3');
+      audio.play();
+    }
+    */
+
+    // Function to display a scene based on its id.
+    function showScene(sceneId) {
+      const sceneData = scenes[sceneId];
+      const sceneDiv = document.getElementById('scene');
+      const optionsDiv = document.getElementById('options');
+
+      // Clear previous scene and options
+      sceneDiv.innerHTML = "";
+      optionsDiv.innerHTML = "";
+
+      // Display the scene text with simple animation (the CSS animation handles the fade-in)
+      sceneDiv.innerHTML = "<p>" + sceneData.text + "</p>";
+
+      // If the scene has options, create buttons for each option.
+      if (sceneData.options) {
+        sceneData.options.forEach(option => {
+          const btn = document.createElement('button');
+          btn.innerText = option.text;
+          btn.className = "option-button";
+          btn.onclick = () => {
+            // Uncomment the following line if you add a sound effect:
+            // playClickSound();
+            showScene(option.next);
+          };
+          optionsDiv.appendChild(btn);
+        });
+      } else {
+        // If no options exist, assume the adventure has ended.
+        const btn = document.createElement('button');
+        btn.innerText = "Restart Adventure";
+        btn.className = "option-button";
+        btn.onclick = () => {
+          showScene("start");
+        };
+        optionsDiv.appendChild(btn);
+      }
+    }
+
+    // Start the adventure by showing the initial scene.
+    showScene("start");
+  </script>
+</body>
+
+</html>
